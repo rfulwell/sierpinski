@@ -20,7 +20,7 @@ def drawfps(screen, fps):
     # Erase the previous value
     pygame.draw.rect(screen, BLACK, (50, 50, 150, 25))
     # Select the font to use, size, bold, italics
-    font = pygame.font.SysFont('Calibri', 25, False, False)
+    font = pygame.font.SysFont('Calibri', 25)
     text = font.render(f"fps: {fps}", True, WHITE)
     screen.blit(text, [50, 50])
 

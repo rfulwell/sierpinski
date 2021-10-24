@@ -121,5 +121,6 @@ while not done:
     # --- Go ahead and update the screen with what we've drawn.
     pygame.display.flip()
  
-    # --- Limit to 60 frames per second
+    # --- Limit to user-defined frames per second
+    # this is a hack, I should be able to use `fps` directly here
     clock.tick(int(f"{fps}"))

@@ -17,8 +17,6 @@ def nextpoint(one, two, three, current):
 
 
 def drawfps(screen, fps):
-    from pygame.draw import rect
-
     # Erase the previous value
     pygame.draw.rect(screen, BLACK, (50, 50, 150, 25))
     # Select the font to use, size, bold, italics

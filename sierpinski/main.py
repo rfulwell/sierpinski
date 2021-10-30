@@ -48,27 +48,25 @@ class Framerate:
 
 
 def init(screen, SIZE_X, SIZE_Y):
-    one_x = random.randrange(SIZE_X)
-    two_x = random.randrange(SIZE_X)
-    three_x = random.randrange(SIZE_X)
-    one_y = random.randrange(SIZE_Y)
-    two_y = random.randrange(SIZE_Y)
-    three_y = random.randrange(SIZE_Y)
+    import itertools
+
+    INIT_POINT_COUNT = 4  # the three triangle vertices plus the initial start point
+    x_input = itertools.repeat(SIZE_X, INIT_POINT_COUNT)
+    y_input = itertools.repeat(SIZE_Y, INIT_POINT_COUNT)
+    one_x, two_x, three_x, start_x = map(random.randrange, x_input)
+    one_y, two_y, three_y, start_y = map(random.randrange, y_input)
     point1 = (one_x, one_y)
     point2 = (two_x, two_y)
     point3 = (three_x, three_y)
-
-    start_x = random.randrange(SIZE_X)
-    start_y = random.randrange(SIZE_Y)
-    current = (start_x, start_y)
+    start = (start_x, start_y)
 
     screen.fill(BLACK)
     pixel(screen, RED, point1)
     pixel(screen, RED, point2)
     pixel(screen, RED, point3)
-    pixel(screen, WHITE, current)
+    pixel(screen, WHITE, start)
 
-    return point1, point2, point3, current
+    return point1, point2, point3, start
 
 
 # Define some colors

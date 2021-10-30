@@ -1,8 +1,6 @@
 import pygame
 import random
-from enum import Enum
 
-from pygame.draw import rect
 
 def pixel(surface, color, pos):
     surface.fill(color, (pos, (1, 1)))
@@ -17,6 +15,7 @@ def nextpoint(one, two, three, current):
     return (next_x, next_y)
 
 def drawfps(screen, fps):
+    from pygame.draw import rect
     # Erase the previous value
     pygame.draw.rect(screen, BLACK, (50, 50, 150, 25))
     # Select the font to use, size, bold, italics
@@ -65,11 +64,8 @@ def init(screen, SIZE_X, SIZE_Y):
     pixel(screen, RED, point2)
     pixel(screen, RED, point3)
     pixel(screen, WHITE, current)
-    pygame.display.flip()
 
     return point1,point2,point3,current
-
-pygame.init()
 
 # Define some colors
 BLACK    = (   0,   0,   0)
@@ -81,19 +77,19 @@ BLUE     = (   0,   0, 255)
 SIZE_X = 1000
 SIZE_Y = 1000
 
-fps = Framerate()
-
+pygame.init()
 size = (SIZE_X, SIZE_Y)
 screen = pygame.display.set_mode(size)
 pygame.display.set_caption("Sierpinski Demo")
-
 point1, point2, point3, current = init(screen, SIZE_X, SIZE_Y)
+pygame.display.flip()
 
 # Loop until the user clicks the close button.
 done = False
  
 # Used to manage how fast the screen updates
 clock = pygame.time.Clock()
+fps = Framerate()
 
 # -------- Main Program Loop -----------
 while not done:
@@ -102,6 +98,7 @@ while not done:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 point1, point2, point3, current = init(screen, SIZE_X, SIZE_Y)
+                pygame.display.flip()
             if event.key == pygame.K_KP_MINUS:
                 fps.down()
             if event.key == pygame.K_KP_PLUS:

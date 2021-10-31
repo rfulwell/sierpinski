@@ -11,7 +11,7 @@ def test_nextpoint():
     point1 = sierpinski.main.Point(size_x, size_y)
     point2 = sierpinski.main.Point(size_x, size_y)
     point3 = sierpinski.main.Point(size_x, size_y)
-    next = sierpinski.main.nextpoint(point1, point2, point3)
+    next = sierpinski.main.nextpoint([point1, point2, point3])
     assert next in [point1, point2, point3]
 
 

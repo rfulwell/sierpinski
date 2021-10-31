@@ -1,5 +1,6 @@
-import pygame
 import random
+
+import pygame
 
 # Define some colors
 BLACK = (0, 0, 0)
@@ -93,12 +94,20 @@ def init(screen: pygame.Surface) -> tuple[list[Point], Point]:
     return [point1, point2, point3], start
 
 
+class State:
+    screen: pygame.Surface
+    fps: Framerate
+    vertices: list[Point]
+    current: Point
+
+
 def main():
     pygame.init()
     size = (SIZE_X, SIZE_Y)
-    screen = pygame.display.set_mode(size)
+    state = State
+    state.screen = pygame.display.set_mode(size)
     pygame.display.set_caption("Sierpinski Demo")
-    vertices, current = init(screen)
+    state.vertices, state.current = init(state.screen)
     pygame.display.flip()
 
     # Loop until the user clicks the close button.
@@ -106,38 +115,42 @@ def main():
 
     # Used to manage how fast the screen updates
     clock = pygame.time.Clock()
-    fps = Framerate()
+    state.fps = Framerate()
 
     # -------- Main Program Loop -----------
     while not done:
-        # --- Main event loop
-        for event in pygame.event.get():  # User did something
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    vertices, current = init(screen)
-                    pygame.display.flip()
-                if event.key == pygame.K_KP_MINUS:
-                    fps.down()
-                if event.key == pygame.K_KP_PLUS:
-                    fps.up()
-                if event.key == pygame.K_q:
-                    done = True
-            if event.type == pygame.QUIT:  # If user clicked close
-                done = True  # Flag that we are done so we exit this loop
+        state, done = event_loop(state, done)
 
-        # --- Game logic should go here
-        current = halfway(current, nextpoint(list(vertices)))
+        # --- Game logic goes here
+        state.current = halfway(state.current, nextpoint(list(state.vertices)))
 
-        # --- Drawing code should go here
-        pixel(screen, WHITE, current)
-        drawfps(screen, fps)
+        # --- Drawing code goes here
+        pixel(state.screen, WHITE, state.current)
+        drawfps(state.screen, state.fps)
 
-        # --- Go ahead and update the screen with what we've drawn.
+        # --- Update the screen with what we've drawn
         pygame.display.flip()
 
         # --- Limit to user-defined frames per second
         # this is a hack, I should be able to use `fps` directly here
-        clock.tick(int(f"{fps}"))
+        clock.tick(int(f"{state.fps}"))
+
+
+def event_loop(state: State, done: bool):
+    for event in pygame.event.get():  # User did something
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                state.vertices, state.current = init(state.screen)
+                pygame.display.flip()
+            if event.key == pygame.K_KP_MINUS:
+                state.fps.down()
+            if event.key == pygame.K_KP_PLUS:
+                state.fps.up()
+            if event.key == pygame.K_q:
+                done = True
+        if event.type == pygame.QUIT:  # If user clicked close
+            done = True  # Flag that we are done so we exit this loop
+    return state, done
 
 
 if __name__ == "__main__":

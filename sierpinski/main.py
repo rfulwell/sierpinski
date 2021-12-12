@@ -142,25 +142,40 @@ def setup():
 
 
 def getcolor(vertices: list[Point], point: Point) -> list[int]:
-    triangle_height = distance_from_line(vertices, vertices[2])
+    mid_point = distance_from_line(vertices, vertices[2]) / 2
     point_distance = distance_from_line(vertices, point)
-    gradient_factor = min(point_distance/triangle_height, 1)
 
-    red = int((1-gradient_factor)*255)
-    green = 0
-    blue = int(gradient_factor*255)
+    if point_distance < 0 or point_distance > 2 * mid_point:
+        return WHITE
+
+    if point_distance <= mid_point:
+        red_gradient = min(1 - point_distance / mid_point, 1)
+        green_gradient = min(point_distance / mid_point, 1)
+        blue_gradient = 0
+    else:
+        red_gradient = 0
+        green_gradient = 1 - ((point_distance - mid_point) / mid_point)
+        blue_gradient = (point_distance - mid_point) / mid_point
+
+    red = int(red_gradient * 255)
+    green = int(green_gradient * 255)
+    blue = int(blue_gradient * 255)
     return (red, green, blue)
 
 
 def distance_from_line(line: list[Point], point: Point) -> float:
     import math
+
     # calculate the area of the parallelogram described by the line, where
-    # A is list[0], B is list[1] and the point, C: |(B-A)*(C-A)| 
-    area = abs((line[1].x-line[0].x)*(point.y-line[0].y) - (line[1].y-line[0].y)*(point.x-line[0].x))
+    # A is list[0], B is list[1] and the point, C: |(B-A)*(C-A)|
+    area = abs(
+        (line[1].x - line[0].x) * (point.y - line[0].y)
+        - (line[1].y - line[0].y) * (point.x - line[0].x)
+    )
     # calculate the length of the base: sqrt((B-A)^2)
-    base = math.sqrt((line[1].x-line[0].x)**2 + (line[1].y-line[0].y)**2)
+    base = math.sqrt((line[1].x - line[0].x) ** 2 + (line[1].y - line[0].y) ** 2)
     # return the height = area/base
-    return area/base
+    return area / base
 
 
 def event_loop(state: State, done: bool):

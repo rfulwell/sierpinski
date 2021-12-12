@@ -49,7 +49,7 @@ def test_first_point_gets_red():
 
 
 def test_second_point_gets_red():
-    # verify that the first point is assigned pure red as part of the base of our
+    # verify that the second point is assigned pure red as part of the base of our
     # pretty RGB triangle
     state = sierpinski.main.setup()
     assert sierpinski.main.RED == sierpinski.main.getcolor(
@@ -58,9 +58,18 @@ def test_second_point_gets_red():
 
 
 def test_third_point_gets_blue():
-    # verify that the first point is assigned pure red as part of the base of our
+    # verify that the third point is assigned pure blue at the top of our
     # pretty RGB triangle
     state = sierpinski.main.setup()
     assert sierpinski.main.BLUE == sierpinski.main.getcolor(
         state.vertices, state.vertices[2]
+    )
+
+
+def test_mid_point_gets_green():
+    # verify that the middle point is assigned pure green in our
+    # pretty RGB triangle
+    state = sierpinski.main.setup()
+    assert sierpinski.main.GREEN == sierpinski.main.getcolor(
+        state.vertices, sierpinski.main.halfway(state.vertices[0], state.vertices[2])
     )

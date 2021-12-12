@@ -37,3 +37,30 @@ def test_halfway_y_axis():
     halfway = sierpinski.main.halfway(point1, point2)
     assert halfway.x == 0
     assert halfway.y == 5
+
+
+def test_first_point_gets_red():
+    # verify that the first point is assigned pure red as part of the base of our
+    # pretty RGB triangle
+    state = sierpinski.main.setup()
+    assert sierpinski.main.RED == sierpinski.main.getcolor(
+        state.vertices, state.vertices[0]
+    )
+
+
+def test_second_point_gets_red():
+    # verify that the first point is assigned pure red as part of the base of our
+    # pretty RGB triangle
+    state = sierpinski.main.setup()
+    assert sierpinski.main.RED == sierpinski.main.getcolor(
+        state.vertices, state.vertices[1]
+    )
+
+
+def test_third_point_gets_blue():
+    # verify that the first point is assigned pure red as part of the base of our
+    # pretty RGB triangle
+    state = sierpinski.main.setup()
+    assert sierpinski.main.BLUE == sierpinski.main.getcolor(
+        state.vertices, state.vertices[2]
+    )

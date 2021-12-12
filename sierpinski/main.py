@@ -44,7 +44,7 @@ class Framerate:
             self.__index__ -= 1
 
 
-def pixel(surface, color, pos: Point) -> None:
+def drawpixel(surface, color, pos: Point) -> None:
     surface.fill(color, (pos.x, pos.y, 1, 1))
 
 
@@ -86,10 +86,10 @@ def init(screen: pygame.Surface) -> tuple[list[Point], Point]:
     )
 
     screen.fill(BLACK)
-    pixel(screen, RED, point1)
-    pixel(screen, RED, point2)
-    pixel(screen, RED, point3)
-    pixel(screen, WHITE, start)
+    drawpixel(screen, RED, point1)
+    drawpixel(screen, RED, point2)
+    drawpixel(screen, BLUE, point3)
+    drawpixel(screen, WHITE, start)
 
     return [point1, point2, point3], start
 
@@ -102,12 +102,7 @@ class State:
 
 
 def main():
-    pygame.init()
-    size = (SIZE_X, SIZE_Y)
-    state = State
-    state.screen = pygame.display.set_mode(size)
-    pygame.display.set_caption("Sierpinski Demo")
-    state.vertices, state.current = init(state.screen)
+    state = setup()
     pygame.display.flip()
 
     # Loop until the user clicks the close button.
@@ -125,7 +120,7 @@ def main():
         state.current = halfway(state.current, nextpoint(list(state.vertices)))
 
         # --- Drawing code goes here
-        pixel(state.screen, WHITE, state.current)
+        drawpixel(state.screen, getcolor(state.vertices, state.current), state.current)
         drawfps(state.screen, state.fps)
 
         # --- Update the screen with what we've drawn
@@ -134,6 +129,38 @@ def main():
         # --- Limit to user-defined frames per second
         # this is a hack, I should be able to use `fps` directly here
         clock.tick(int(f"{state.fps}"))
+
+
+def setup():
+    pygame.init()
+    size = (SIZE_X, SIZE_Y)
+    state = State
+    state.screen = pygame.display.set_mode(size)
+    pygame.display.set_caption("Sierpinski Demo")
+    state.vertices, state.current = init(state.screen)
+    return state
+
+
+def getcolor(vertices: list[Point], point: Point) -> list[int]:
+    triangle_height = distance_from_line(vertices, vertices[2])
+    point_distance = distance_from_line(vertices, point)
+    gradient_factor = min(point_distance/triangle_height, 1)
+
+    red = int((1-gradient_factor)*255)
+    green = 0
+    blue = int(gradient_factor*255)
+    return (red, green, blue)
+
+
+def distance_from_line(line: list[Point], point: Point) -> float:
+    import math
+    # calculate the area of the parallelogram described by the line, where
+    # A is list[0], B is list[1] and the point, C: |(B-A)*(C-A)| 
+    area = abs((line[1].x-line[0].x)*(point.y-line[0].y) - (line[1].y-line[0].y)*(point.x-line[0].x))
+    # calculate the length of the base: sqrt((B-A)^2)
+    base = math.sqrt((line[1].x-line[0].x)**2 + (line[1].y-line[0].y)**2)
+    # return the height = area/base
+    return area/base
 
 
 def event_loop(state: State, done: bool):
